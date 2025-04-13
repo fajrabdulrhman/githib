@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.weatherapp.ui.fragments.HomeFragment"
+        android:label="fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_savedCitiesFragment"
+            app:destination="@id/savedCitiesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.weatherapp.ui.fragments.DetailsFragment"
+        android:label="fragment_details">
+        <argument
+            android:name="weather"
+            app:argType="com.example.weatherapp.models.WeatherResponse" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/savedCitiesFragment"
+        android:name="com.example.weatherapp.ui.fragments.SavedCitiesFragment"
+        android:label="fragment_saved_cities" >
+
+        <action
+            android:id="@+id/action_savedCitiesFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+</navigation>
