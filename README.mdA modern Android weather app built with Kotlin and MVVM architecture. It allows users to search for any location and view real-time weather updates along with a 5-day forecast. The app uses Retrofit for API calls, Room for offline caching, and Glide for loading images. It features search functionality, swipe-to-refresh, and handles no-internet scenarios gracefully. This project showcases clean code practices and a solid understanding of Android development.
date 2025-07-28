@@ -1,6 +1,0 @@
-A modern Android weather app built with Kotlin and MVVM architecture. 
-It allows users to search for any location and view real-time weather updates along with a 5-day forecast.
-The app uses Retrofit for API calls, Room for offline caching, and Glide for loading images.
-It features search functionality, swipe-to-refresh, and handles no-internet scenarios gracefully.
-This project showcases clean code practices and a solid understanding of Android development.
-
