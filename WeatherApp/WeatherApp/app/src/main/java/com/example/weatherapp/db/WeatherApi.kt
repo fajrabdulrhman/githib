@@ -1,4 +1,4 @@
-package com.example.weatherapp.api
+package com.example.weatherapp.db
 
 import com.example.weatherapp.models.SearchResponse
 import com.example.weatherapp.models.WeatherResponse

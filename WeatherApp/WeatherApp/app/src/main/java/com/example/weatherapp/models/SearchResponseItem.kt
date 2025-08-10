@@ -1,6 +1,6 @@
 package com.example.weatherapp.models
 
-data class searchResponseItem(
+data class SearchResponseItem(
     val country: String,
     val id: Int,
     val lat: Double,

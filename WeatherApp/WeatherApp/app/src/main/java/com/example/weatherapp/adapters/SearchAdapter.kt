@@ -12,8 +12,9 @@ import com.example.weatherapp.models.Current
 import com.example.weatherapp.models.Forecast
 import com.example.weatherapp.models.Location
 import com.example.weatherapp.models.SearchResponse
+import com.example.weatherapp.models.SearchResponseItem
 import com.example.weatherapp.models.WeatherResponse
-import com.example.weatherapp.models.searchResponseItem
+
 
 class SearchAdapter:RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
@@ -23,17 +24,17 @@ class SearchAdapter:RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     }
 
-    private val differCallBack = object : DiffUtil.ItemCallback<searchResponseItem>() {
+    private val differCallBack = object : DiffUtil.ItemCallback<SearchResponseItem>() {
         override fun areItemsTheSame(
-            oldItem: searchResponseItem,
-            newItem: searchResponseItem
+            oldItem: SearchResponseItem,
+            newItem: SearchResponseItem
         ): Boolean {
             return oldItem.lat == newItem.lat && oldItem.lon == newItem.lon
         }
 
         override fun areContentsTheSame(
-            oldItem: searchResponseItem,
-            newItem: searchResponseItem
+            oldItem: SearchResponseItem,
+            newItem: SearchResponseItem
         ): Boolean {
             return oldItem == newItem
         }
@@ -49,7 +50,7 @@ class SearchAdapter:RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
         return differ.currentList.size
     }
 
-    private var onItemClickListener: ((searchResponseItem) -> Unit)? = null
+    private var onItemClickListener: ((SearchResponseItem) -> Unit)? = null
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val searchResponseItem = differ.currentList[position]
@@ -68,7 +69,7 @@ class SearchAdapter:RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     }
 
-        fun setOnItemClickListener(listener: (searchResponseItem) -> Unit) {
+        fun setOnItemClickListener(listener: (SearchResponseItem) -> Unit) {
             onItemClickListener = listener
         }
 

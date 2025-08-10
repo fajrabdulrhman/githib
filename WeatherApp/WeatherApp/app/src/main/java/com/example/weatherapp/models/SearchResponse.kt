@@ -1,3 +1,3 @@
 package com.example.weatherapp.models
 
-class SearchResponse : ArrayList<searchResponseItem>()
+class SearchResponse : ArrayList<SearchResponseItem>()

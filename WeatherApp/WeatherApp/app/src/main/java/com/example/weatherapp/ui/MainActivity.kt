@@ -9,20 +9,18 @@ import com.example.weatherapp.R
 import com.example.weatherapp.db.WeatherDatabase
 import com.example.weatherapp.repository.WeatherRepository
 import com.example.weatherapp.ui.fragments.HomeFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 
+
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        val  weatherRepository=WeatherRepository(WeatherDatabase(this))
-//        val viewModelProviderFactory=ViewModelProviderFactory(weatherRepository)
-//       viewModel=ViewModelProvider(this,viewModelProviderFactory).get(WeatherViewModel::class.java)
-
-
-            // Load the initial fragment
 
             loadFragment(HomeFragment())
 

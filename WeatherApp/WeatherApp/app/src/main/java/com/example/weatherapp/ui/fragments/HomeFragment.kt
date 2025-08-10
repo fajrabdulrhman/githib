@@ -1,14 +1,12 @@
 package com.example.weatherapp.ui.fragments
 
 import android.Manifest
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -18,14 +16,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,21 +32,14 @@ import com.example.weatherapp.adapters.DayAdapter
 import com.example.weatherapp.adapters.WeekAdapter
 //import com.example.weatherapp.adapters.DayAdapter
 //import com.example.weatherapp.adapters.DayAdapter
-import com.example.weatherapp.api.RetrofitInstance
-import com.example.weatherapp.api.WeatherApi
-import com.example.weatherapp.db.WeatherDatabase
 import com.example.weatherapp.models.Current
-import com.example.weatherapp.models.Forecast
 import com.example.weatherapp.models.Forecastday
-import com.example.weatherapp.repository.WeatherRepository
-import com.example.weatherapp.ui.ViewModelProviderFactory
 import com.example.weatherapp.ui.WeatherViewModel
-import com.example.weatherapp.util.Constants.Companion.API_KEY
 import com.example.weatherapp.util.Resource
-import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var savedButton: ImageButton
@@ -59,7 +48,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var weekAdapter: WeekAdapter
     private lateinit var displayWeek:RecyclerView
     lateinit var diplayDay: RecyclerView
-    private lateinit var viewModel: WeatherViewModel
     private lateinit var hum:TextView
     private lateinit var Image:ImageView
     private lateinit var date:TextView
@@ -68,16 +56,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var degree:TextView
     private lateinit var cityName:TextView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-
-
+  private val viewModel:WeatherViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view,savedInstanceState)
 
         degree=view.findViewById(R.id.degreeTv)
-        val  weatherRepository= WeatherRepository(WeatherDatabase(requireContext()))
+     //   val  weatherRepository= WeatherRepository(db,weatherApi)
         val application = requireActivity().application
-        val viewModelProviderFactory= ViewModelProviderFactory(application, weatherRepository)
-        viewModel= ViewModelProvider(this,viewModelProviderFactory).get(WeatherViewModel::class.java)
+        //val viewModelProviderFactory= ViewModelProviderFactory(application, weatherRepository)
+
         diplayDay = view.findViewById(R.id.todaysRecyclerView)
         Image=view.findViewById(R.id.todayImage)
         wind=view.findViewById(R.id.TvWind)
@@ -180,6 +167,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 )
             }
         } else {
+            Log.d("ZZZZZZZZZZ","${getLocation()}")
             // Permissions already granted, get location
             getLocation()
         }
@@ -200,9 +188,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
 
                 is Resource.Error -> {
+                    Log.d("errorFetching,"," ${response.message}")
                     Toast.makeText(
                         requireContext(),
                         "fofo: ${response.message}",
+
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -274,7 +264,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         val locationn = " $latitude,$longitude"
                         Log.i("fffffffffffff", "getLocation: $locationn")
 
-                            viewModel.getWeather(latitude, longitude)
+                        viewModel.getWeather(latitude, longitude)
 
 
                     } else {
@@ -304,6 +294,89 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 .show()
         }
     }
+
+
+//private fun getLocation() {
+//    if (ContextCompat.checkSelfPermission(
+//            requireContext(),
+//            Manifest.permission.ACCESS_FINE_LOCATION
+//        ) == PackageManager.PERMISSION_GRANTED ||
+//        ContextCompat.checkSelfPermission(
+//            requireContext(),
+//            Manifest.permission.ACCESS_COARSE_LOCATION
+//        ) == PackageManager.PERMISSION_GRANTED
+//    ) {
+//
+//        // التحقق ما إذا كانت خدمات الموقع مفعّلة
+//        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+//            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+//        ) {
+//            val gpsLocation =
+//                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+//            val networkLocation =
+//                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+//
+//            val bestLocation = when {
+//                gpsLocation != null -> gpsLocation
+//                networkLocation != null -> networkLocation
+//                else -> null
+//            }
+//
+//            if (bestLocation != null) {
+//                val lat = bestLocation.latitude
+//                val lon = bestLocation.longitude
+//                Log.d("NOUR", "الموقع: $lat, $lon")
+//
+//                Toast.makeText(
+//                    requireContext(),
+//                    "الموقع:\nخط العرض: $lat\nخط الطول: $lon",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//
+//                viewModel.getWeather(lat, lon)
+//            } else {
+//                locationManager.requestLocationUpdates(
+//                    LocationManager.GPS_PROVIDER,
+//                    1000L, // كل ثانية
+//                    1f,    // عند تغيّر الموقع بمتر واحد على الأقل
+//                    object : android.location.LocationListener {
+//                        override fun onLocationChanged(location: Location) {
+//                            val lat = location.latitude
+//                            val lon = location.longitude
+//                            Log.d("LiveLocation", "Lat: $lat, Lon: $lon")
+//                            Toast.makeText(requireContext(), "موقع مباشر:\n$lat, $lon", Toast.LENGTH_LONG).show()
+//                            viewModel.getWeather(lat, lon)
+//
+//                            // توقف عن تحديث الموقع بعد أول قراءة
+//                            locationManager.removeUpdates(this)
+//                        }
+//
+//                        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+//                        override fun onProviderEnabled(provider: String) {}
+//                        override fun onProviderDisabled(provider: String) {}
+//                    }
+//                )
+//            }
+//        } else {
+//            // عرض رسالة للمستخدم لتفعيل خدمات الموقع
+//            AlertDialog.Builder(requireContext())
+//                .setTitle("خدمات الموقع غير مفعّلة")
+//                .setMessage("يرجى تفعيل خدمات الموقع من إعدادات الجهاز.")
+//                .setPositiveButton("الإعدادات") { _, _ ->
+//                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+//                }
+//                .setNegativeButton("إلغاء") { dialog, _ ->
+//                    dialog.dismiss()
+//                }
+//                .create()
+//                .show()
+//        }
+//    } else {
+//        Toast.makeText(requireContext(), "صلاحيات الموقع غير مفعّلة.", Toast.LENGTH_SHORT)
+//            .show()
+//    }
+//}
+
 
 
 
@@ -359,6 +432,3 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
 }
-
-
-

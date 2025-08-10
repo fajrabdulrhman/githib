@@ -1,19 +1,14 @@
 package com.example.weatherapp.ui.fragments
 
-import android.app.Application
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgs
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 //import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,16 +17,14 @@ import com.bumptech.glide.Glide
 import com.example.weatherapp.R
 import com.example.weatherapp.adapters.DayAdapter
 import com.example.weatherapp.adapters.WeekAdapter
-import com.example.weatherapp.db.WeatherDatabase
 import com.example.weatherapp.models.Current
 import com.example.weatherapp.models.Forecastday
-import com.example.weatherapp.repository.WeatherRepository
-import com.example.weatherapp.ui.ViewModelProviderFactory
 import com.example.weatherapp.ui.WeatherViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
-    lateinit var viewModel: WeatherViewModel
     private lateinit var savedButton: ImageButton
     private lateinit var locationManager: LocationManager
     private lateinit var dayAdapter: DayAdapter
@@ -45,6 +38,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     //    private lateinit var degree:TextView
     private lateinit var degree: TextView
     private lateinit var cityName: TextView
+    private val viewModel:WeatherViewModel by viewModels()
 
     val args: DetailsFragmentArgs by navArgs()
 
@@ -54,10 +48,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
        val weather = args.weather
 
         degree=view.findViewById(R.id.degreeTv)
-        val  weatherRepository= WeatherRepository(WeatherDatabase(requireContext()))
+
         val application = requireActivity().application
-        val viewModelProviderFactory= ViewModelProviderFactory(application,weatherRepository)
-        viewModel= ViewModelProvider(this,viewModelProviderFactory).get(WeatherViewModel::class.java)
+
+
         diplayDay = view.findViewById(R.id.todaysRecyclerView)
         Image=view.findViewById(R.id.todayImage)
         wind=view.findViewById(R.id.TvWind)

@@ -5,5 +5,5 @@ data class Day(
     val avgtemp_c: Double,
     val condition: Condition,
     val maxwind_kph: Double,
-    val uv: Int
+    val uv: Double
 )

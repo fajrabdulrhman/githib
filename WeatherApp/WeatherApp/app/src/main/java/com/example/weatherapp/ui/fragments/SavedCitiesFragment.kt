@@ -1,6 +1,5 @@
 package com.example.weatherapp.ui.fragments
 
-import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,50 +7,46 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.weatherapp.R
-import com.example.weatherapp.adapters.DayAdapter
 import com.example.weatherapp.adapters.SavedAdapter
 import com.example.weatherapp.adapters.SearchAdapter
-import com.example.weatherapp.db.WeatherDatabase
-import com.example.weatherapp.models.WeatherResponse
-import com.example.weatherapp.repository.WeatherRepository
-import com.example.weatherapp.ui.ViewModelProviderFactory
 import com.example.weatherapp.ui.WeatherViewModel
 import com.example.weatherapp.util.Resource
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SavedCitiesFragment : Fragment(R.layout.fragment_saved_cities2) {
     lateinit var searchButton: FloatingActionButton
     lateinit var savedAdapter: SavedAdapter
     lateinit var savedRecyclerView: RecyclerView
-    private lateinit var viewModel: WeatherViewModel
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var searchBar: EditText
     private lateinit var searchRecyclerView: RecyclerView
     private lateinit var dialog: BottomSheetDialog
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout 
-
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private val viewModel:WeatherViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val weatherRepository = WeatherRepository(WeatherDatabase(requireContext()))
+       // val weatherRepository = WeatherRepository(db,weatherApi)
         val application = requireActivity().application
-        val viewModelProviderFactory = ViewModelProviderFactory(application, weatherRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(WeatherViewModel::class.java)
+      //  val viewModelProviderFactory = ViewModelProviderFactory(application, weatherRepository)
+      //  viewModel = ViewModelProvider(this, viewModelProviderFactory).get(WeatherViewModel::class.java)
 
         savedRecyclerView = view.findViewById(R.id.savedRecyclerView)
         searchButton = view.findViewById(R.id.floatingActionButton)
@@ -156,30 +151,6 @@ class SavedCitiesFragment : Fragment(R.layout.fragment_saved_cities2) {
                 }
             }
         }
-
-//        searchAdapter.setOnItemClickListener { searchResponseItem ->
-//            // Initiate the API call here
-//            viewModel.getWeather(searchResponseItem.lat, searchResponseItem.lon)
-//
-//            viewModel.gettingWeather.observe(viewLifecycleOwner, Observer { response ->
-//                when (response) {
-//                    is Resource.Success -> {
-//                        response.data?.let { weatherResponse ->
-//                            Log.d("SavedCitiesFragment", "Weather data fetched: $weatherResponse")
-//                            Toast.makeText(requireContext(), "Saved successfully", Toast.LENGTH_LONG).show()
-//                            viewModel.saveWeather(weatherResponse)
-//                        }
-//                        dialog.dismiss()  // Dismiss the BottomSheetDialog
-//                    }
-//                    is Resource.Error -> {
-//                        Toast.makeText(requireContext(), "Error: ${response.message}", Toast.LENGTH_LONG).show()
-//                    }
-//                    is Resource.Loading -> {
-//                        Toast.makeText(requireContext(), "Loading...", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//            })
-//        }
 
 
         viewModel.searchWeather.observe(viewLifecycleOwner, Observer { response ->
